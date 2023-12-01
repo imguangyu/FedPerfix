@@ -26,7 +26,7 @@ from flcore.servers.serverbabu import FedBABU
 
 from flcore.thread import Thread
 
-from system.flcore.trainmodel.prompt import build_prompt
+from flcore.trainmodel.prompt import build_prompt
 from flcore.trainmodel.prefix import build_prefix
 from flcore.trainmodel.partial import build_paitial
 from flcore.trainmodel.adapter import build_adapter
@@ -77,7 +77,7 @@ def saved_config(args):
             args.no_pt = True
         elif args.method == 'FedBN':
             args.model = 'vit_small_patch16_224'
-            args.algorithm = 'FedAVG'
+            args.algorithm = 'FedAvg'
             args.local_parts = ['norm']
             args.no_pt = True
         elif args.method == 'FedBABU':
@@ -87,18 +87,18 @@ def saved_config(args):
             args.no_pt = True
         elif args.method == 'FedRep':
             args.model = 'vit_small_patch16_224'
-            args.algorithm = 'FedAVG'
+            args.algorithm = 'FedAvg'
             args.local_parts = ['head']
             args.no_pt = True
         elif args.method == 'VanillaAttention':
             args.model = 'vit_small_patch16_224'
-            args.algorithm = 'FedAVG'
+            args.algorithm = 'FedAvg'
             args.local_parts = ['attn', 'head']
             args.no_pt = True
         elif args.method == 'FedPerfix':
-            args.model = 'perfix'
+            args.model = 'prefix'
             args.basic_model = 'vit_small_patch16_224'
-            args.algorithm = 'FedAVG'
+            args.algorithm = 'FedAvg'
             args.no_pt = True
             args.local_parts = ['blocks.11','adapter', 'head'] \
                 if args.dataset == 'cifar100' else ['adapter', 'head']
@@ -401,6 +401,7 @@ if __name__ == "__main__":
 
     print("=" * 50)
 
+    saved_config(args)
     print("Algorithm: {}".format(args.algorithm))
     print("Local batch size: {}".format(args.batch_size))
     print("Local steps: {}".format(args.local_steps))
@@ -421,8 +422,6 @@ if __name__ == "__main__":
         print("Cuda device id: {}".format(os.environ["CUDA_VISIBLE_DEVICES"]))
     print("=" * 50)
 
-
-    saved_config(args)
     server = setup(args)
     
 
@@ -436,7 +435,7 @@ if __name__ == "__main__":
 
     
     mapping_dict = allocate_clients_to_threads_personalized(args)
-    client_dicts = [{'device': "cuda:%d" % (i % torch.cuda.device_count()), 'client_map':mapping_dict[i], 'client_obj': server.client_obj} for i in range(args.num_threads)]
+    client_dicts = [{'device': "cuda:%d" % (i % torch.cuda.device_count()) if torch.cuda.device_count()>0 else "cpu", 'client_map':mapping_dict[i], 'client_obj': server.client_obj} for i in range(args.num_threads)]
 
 
     client_info = Queue()

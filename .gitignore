@@ -1,2 +1,30 @@
 __pycache__
 PersonalizedFL
+
+# cache
+*.pyc
+.vscode
+
+# data
+data
+dataset
+*.zip
+*.gz
+chestxray
+# log
+logs
+wandb
+*.pt
+*.h5
+*.csv
+*.json
+*.pdf
+*.png
+
+# test files
+test.ipynb
+*.ipynb
+
+#utils
+gdrive
+

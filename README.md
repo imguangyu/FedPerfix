@@ -20,7 +20,7 @@ pip install -r requirements.txt
 ### Option 1. Create your own split
 
 1. Change the settings in `dataset/generate_{$DATASET_NAME}.py`
-2. `python generate_cifar100.py noniid - dir # for practical noniid and unbalanced scenario`
+2. `python generate_cifar100.py noniid - dir # for practical noniid and unbalanced scenario` (It may take a while to split the data)
 
 ### Option 2. Use our split
 
@@ -36,21 +36,27 @@ We use [wandb](https://wandb.ai/site) to log our results. If you don't want to u
 cd system
 ```
 2. Run the following commands
-```
-# Set the dataset and FL settings
-data=cifar100
-nb=100 # number of classes
-nc=64 # number of clients
-jr=0.125 # client sample rate
-config=FedPerfix # Choose from FedAVG, Local, APFL, PerAVG, FedBN, FedBABU, FedRep, VanillaAttention, and FedPerfix.
+- Set the dataset and FL settings
+- `data=cifar100` # Name of the data folder
 
-python main.py -mtd $config -data $data -nc $nc -jr $jr -nb $nb
+- `nb=100` # number of classes
+
+- `nc=64` # number of clients
+
+- `jr=0.125` # client sample rate
+
+- `nt=4` # number of thread
+
+- `config=FedPerfix` # Choose from FedAVG, Local, APFL, PerAVG, FedBN, FedBABU, FedRep, VanillaAttention, and FedPerfix.
+
+```
+python main.py -mtd $config -data $data -nc $nc -jr $jr -nb $nb -nt $nt
 ```
 
 For the ablation and other results, please check the details of the code.
 
 ## For Customize settings
-1. Use `--local_parts` to specific the local parts of the model
+1. Use `--local_parts` to specify the local parts of the model
 2. Use `--basic_model/-vt` to change the backbone of the model
 
 ## Citation
